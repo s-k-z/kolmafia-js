@@ -218,6 +218,7 @@ export function getWorkshed(): Item;
 export function gnomadsAvailable(): boolean;
 export function goalExists(check: string): boolean;
 export function groupString(string: string, regex: string): { [key: number]: { [key: number]: string } };
+export function guildAvailable(): boolean;
 export function guildStoreAvailable(): boolean;
 export function handlingChoice(): boolean;
 export function haveBartender(): boolean;
