@@ -1,13 +1,15 @@
-export function abort(string: string): void;
-export function abort(): void;
+export function abort(string: string): never;
+export function abort(): never;
 export function addItemCondition(arg1: number, arg2: Item): void;
 export function addItemCondition(arg1: Item, arg2: number): void;
-export function adv1(locationValue: Location, adventuresUsedValue: number, filterFunction: (round: number, monster: Monster, text: string) => string): boolean;
+export function adv1(locationValue: Location, adventuresUsedValue: number, filterFunction: string | ((round: number, monster: Monster, text: string) => string)): boolean;
+export function adv1(locationValue: Location, adventuresUsedValue: number): boolean;
+export function adv1(locationValue: Location): boolean;
 export function advCost(skill: Skill): number;
 export function adventure(arg1: Location, arg2: number): boolean;
-export function adventure(arg1: Location, arg2: number, filterFunction: (round: number, monster: Monster, text: string) => string): boolean;
+export function adventure(arg1: Location, arg2: number, filterFunction: string | ((round: number, monster: Monster, text: string) => string)): boolean;
 export function adventure(arg1: number, arg2: Location): boolean;
-export function adventure(arg1: number, arg2: Location, filterFunction: (round: number, monster: Monster, text: string) => string): boolean;
+export function adventure(arg1: number, arg2: Location, filterFunction: string | ((round: number, monster: Monster, text: string) => string)): boolean;
 export function allMonstersWithId(): { [monster: string]: boolean };
 export function allNormalOutfits(): string[];
 export function appearanceRates(location: Location): { [monster: string]: number };
@@ -37,17 +39,17 @@ export function booleanModifier(arg: Effect, modifier: string): boolean;
 export function buffedHitStat(): number;
 export function bufferToFile(var1: string, var2: string): boolean;
 export function buy(item: Item): boolean;
-export function buy(arg1: Item, arg2: number): boolean;
-export function buy(arg1: Item, arg2: number, arg3: number): number;
-export function buy(arg1: number, arg2: Item): boolean;
-export function buy(arg1: number, arg2: Item, arg3: number): number;
-export function buy(arg1: Coinmaster, arg2: number, arg3: Item): boolean;
+export function buy(item: Item, quantity: number): boolean;
+export function buy(item: Item, quantity: number, price: number): number;
+export function buy(quantity: number, item: Item): boolean;
+export function buy(quantity: number, item: Item, price: number): number;
+export function buy(coinmaster: Coinmaster, quantity: number, item: Item): boolean;
 export function buyPrice(master: Coinmaster, item: Item): number;
 export function buyUsingStorage(item: Item): boolean;
-export function buyUsingStorage(arg1: Item, arg2: number): boolean;
-export function buyUsingStorage(arg1: Item, arg2: number, arg3: number): number;
-export function buyUsingStorage(arg1: number, arg2: Item): boolean;
-export function buyUsingStorage(arg1: number, arg2: Item, arg3: number): number;
+export function buyUsingStorage(item: Item, quantity: number): boolean;
+export function buyUsingStorage(item: Item, quantity: number, price: number): number;
+export function buyUsingStorage(quantity: number, item: Item): boolean;
+export function buyUsingStorage(quantity: number, item: Item, price: number): number;
 export function buysItem(master: Coinmaster, item: Item): boolean;
 export function canDrink(): boolean;
 export function canEat(): boolean;
@@ -75,6 +77,8 @@ export function choiceFollowsFight(): boolean;
 export function classModifier(arg: string, modifier: string): Class;
 export function classModifier(arg: Item, modifier: string): Class;
 export function clear(arg: any): void;
+export function clearBoozeHelper(): void;
+export function clearFoodHelper(): void;
 export function cliExecute(string: string): boolean;
 export function cliExecuteOutput(string: string): string;
 export function closetAmount(arg: Item): number;
@@ -142,6 +146,7 @@ export function equippedAmount(arg: Item): number;
 export function equippedItem(slot: Slot): Item;
 export function eudora(): string;
 export function eudora(newEudora: string): boolean;
+export function eudoraItem(): Item;
 export function everyCardName(name: string): string;
 export function expectedDamage(): number;
 export function expectedDamage(arg: Monster): number;
@@ -244,6 +249,7 @@ export function holiday(): string;
 export function hpCost(skill: Skill): number;
 export function imageToMonster(value: string): Monster;
 export function inBadMoon(): boolean;
+export function inCasual(): boolean;
 export function inHardcore(): boolean;
 export function inMoxieSign(): boolean;
 export function inMultiFight(): boolean;
@@ -503,7 +509,7 @@ export function runChoice(decision: number, extra: string): string;
 export function runChoice(decision: number, extra: boolean): string;
 export function runChoice(decision: number, custom: boolean, more: string): string;
 export function runCombat(): string;
-export function runCombat(filterFunction: (round: number, monster: Monster, text: string) => string): string;
+export function runCombat(filterFunction: string | ((round: number, monster: Monster, text: string) => string)): string;
 export function runTurn(): string;
 export function runaway(): string;
 export function scrapPockets(): { [key: number]: number };
@@ -660,6 +666,9 @@ export function useSkill(arg1: number, arg2: Skill, target: string): boolean;
 export function useSkill(skill: Skill): string;
 export function userConfirm(message: string): boolean;
 export function userConfirm(message: string, timeOut: number, defaultBoolean: boolean): boolean;
+export function userPrompt(message: string): string;
+export function userPrompt(message: string, options: any): string;
+export function userPrompt(message: string, timeOut: number, defaultString: string): string;
 export function visit(master: Coinmaster): boolean;
 export function visitUrl(): string;
 export function visitUrl(string: string): string;
@@ -1267,6 +1276,16 @@ declare global {
          * Timescast */
         readonly timescast: number;
     }
+    class Slot extends MafiaClass {
+        static get<T = Slot>(name: string): T;
+        static get<T = Slot>(names: string[]): T[];
+        static all<T = Slot>(): T[];
+    }
+    class Stat extends MafiaClass {
+        static get<T = Stat>(name: string): T;
+        static get<T = Stat>(names: string[]): T[];
+        static all<T = Stat>(): T[];
+    }
     class Thrall extends MafiaClass {
         static get<T = Thrall>(name: string): T;
         static get<T = Thrall>(names: string[]): T[];
@@ -1321,15 +1340,5 @@ declare global {
         /**
          * Attack element */
         readonly attackElement: Element;
-    }
-    class Slot extends MafiaClass {
-        static get<T = Slot>(name: string): T;
-        static get<T = Slot>(names: string[]): T[];
-        static all<T = Slot>(): T[];
-    }
-    class Stat extends MafiaClass {
-        static get<T = Stat>(name: string): T;
-        static get<T = Stat>(names: string[]): T[];
-        static all<T = Stat>(): T[];
     }
 }

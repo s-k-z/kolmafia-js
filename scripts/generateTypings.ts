@@ -256,7 +256,7 @@ class GenerateTypings {
   }
 
   static adjustForJsCallbacks(name: string, params: string[]) {
-    const combatFilterSignature = "(round: number, monster: Monster, text: string) => string";
+    const combatFilterSignature = "string | ((round: number, monster: Monster, text: string) => string)";
     switch (name) {
       case "adv1":
       case "adventure":
@@ -295,6 +295,8 @@ class GenerateTypings {
         if (!match || !match.groups) return null;
         const { name, type, paramTypes } = match.groups;
 
+        const returnType = name === 'abort' ? 'never' : GenerateTypings.massageRefType(type);
+
         const pt = GenerateTypings.adjustForJsCallbacks(name, paramTypes
           ? paramTypes
             .split(", ")
@@ -303,7 +305,7 @@ class GenerateTypings {
 
         return {
           name,
-          type: GenerateTypings.massageRefType(type),
+          type: returnType,
           paramTypes: pt,
         };
       })
